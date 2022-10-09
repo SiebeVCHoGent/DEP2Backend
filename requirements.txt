@@ -1,2 +1,5 @@
 fastapi~=0.75.2
 uvicorn
+python-dotenv~=0.21.0
+SQLAlchemy~=1.4.41
+psycopg2=2.9.4
