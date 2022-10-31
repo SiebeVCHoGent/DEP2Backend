@@ -20,7 +20,7 @@ def login(login_data: dict):
 
 
 @router.post('/register')
-def login(register_data: dict):
+def register(register_data: dict):
     try:
         email = register_data['email']
         password = register_data['password']

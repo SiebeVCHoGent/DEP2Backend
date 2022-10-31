@@ -1,13 +1,8 @@
 from app.main.persistance import termdao
 
 
-def add_searchterm(term: str):
-    terms = term.split("*")
-    parent = None
-    if len(terms) > 1:
-        parent = terms[-2]
-    term = terms[-1]
-    return termdao.add_searchterm(term, parent)
+def add_searchterm(term: str, parent_id: str = None):
+    return termdao.add_searchterm(term, parent_id)
 
 
 def delete_searchterm(id: str):

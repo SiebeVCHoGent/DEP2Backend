@@ -1,18 +1,17 @@
 import ulid
 
+from app.main.common.exceptions import DBException
 from app.main.config import db
 
 
-def add_searchterm(term, parent):
-    # add searchtermm to db
-    # get parent id
-    if parent:
-        parent = get_term_id(parent)
-
-    id = ulid.ulid()
-    db.session.add(db.Searchterm(id=id, term=term, parent=parent))
-    db.session.commit()
-    return {"id": id, "term": term, "parent": parent}
+def add_searchterm(term, parent = None):
+    try:
+        id = ulid.ulid()
+        db.session.add(db.Searchterm(id=id, term=term, parent=parent))
+        db.session.commit()
+        return {"id": id, "term": term, "parent": parent}
+    except Exception as e:
+        raise DBException(f'Error while adding searchterm to database {str(e)}')
 
 
 def get_term_id(term: str):

@@ -1,6 +1,7 @@
 import typing as t
 
 from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
 from fastapi_auth_middleware import AuthMiddleware
 from starlette import status
 from starlette.authentication import AuthenticationError
@@ -12,19 +13,27 @@ from app.main.routers import kmo, auth, tree
 from app.main.config import settings
 from app.main.services import authservice
 
-app = FastAPI()
+app = FastAPI(docs_url="/docs", redoc_url="/redoc", openapi_url="/")
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title="HOGENT - Data Engineering Project",
+        version=settings.VERSION,
+        description="Data Engineering Project Created for HOGENT. View all the SME's in Flanders and their data.",
+        routes=app.routes,
+    )
+    openapi_schema["info"]["x-logo"] = {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/10/HoGent_Logo.png"
+    }
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+app.openapi = custom_openapi
 
 app.include_router(kmo.router)
 app.include_router(auth.router)
 app.include_router(tree.router)
-
-
-@app.get('/')
-def version():
-    return {
-        'Info': 'Data Engineering Project II: Backend',
-        'Version': settings.VERSION
-    }
 
 
 @app.exception_handler(AuthenticationError)
@@ -59,4 +68,4 @@ def verify_auth(auth_header) -> t.Tuple[t.List[str], User]:
         raise AuthenticationError('Authentication failed')
 
 
-app.add_middleware(AuthMiddleware, verify_header=verify_auth, excluded_urls=['/', '/login', '/register'])
+app.add_middleware(AuthMiddleware, verify_header=verify_auth, excluded_urls=['/', '/login', '/register', '/redoc', '/docs'])
