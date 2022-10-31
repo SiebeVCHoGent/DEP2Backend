@@ -66,6 +66,10 @@ class DBConfig():
             __table__ = base.metadata.tables['user']
         self.User = User
 
+        class Searchterm(base):
+            __table__ = base.metadata.tables['searchterm']
+        self.Searchterm = Searchterm
+
         Session = sessionmaker(bind=engine)
         self.session = Session()
 

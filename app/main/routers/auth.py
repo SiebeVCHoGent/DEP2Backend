@@ -7,6 +7,7 @@ from app.main.services import authservice
 
 router = APIRouter()
 
+
 @router.post('/login')
 def login(login_data: dict):
     try:

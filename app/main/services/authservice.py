@@ -35,7 +35,7 @@ def register(gebruiker: User) -> str:
     try:
         gebruiker = create_user(gebruiker)
         token = __create_jwt(gebruiker.get_jwt_data())
-        return f'Bearer {token}'
+        return token
     except Exception as e:
         log.error('An error occurred while registering.')
 
@@ -50,7 +50,7 @@ def login(email: str, password: str):
             raise Exception()
 
         token = __create_jwt(gebruiker.get_jwt_data())
-        return f'Bearer {token}'
+        return token
     except Exception:
         raise AuthenticationError('Name and/or password are incorrect.')
 

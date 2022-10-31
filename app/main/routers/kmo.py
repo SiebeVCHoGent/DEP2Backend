@@ -8,3 +8,13 @@ router = APIRouter()
 @router.get("/kmo/{ondernemingsnummer}")
 def get_kmo(ondernemingsnummer: str):
     return kmoservice.get_kmo(ondernemingsnummer)
+
+
+@router.get("/kmos")
+def search_kmos(search: str):
+    """
+    Search a kmo in the database
+    :param search: Query param search string
+    :return: All the found kmos
+    """
+    return kmoservice.search_kmos(search)

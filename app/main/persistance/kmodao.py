@@ -26,3 +26,9 @@ def get_verslagen(ondernemingsnummer: str):
         verslag = Verslag(**vars(verslag), **jaarverslag, **website)
         verslagen_model.append(verslag)
     return verslagen_model
+
+
+def search_kmos(search: str):
+    # full text search on kmo - TODO: create TS vector field
+    kmos = db.session.query(db.Kmo).filter(db.Kmo.naam.match(search)).all()
+    return kmos
