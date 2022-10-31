@@ -70,3 +70,21 @@ def delete_user(gebruiker_id: str):
 
 def get_user_by_email(email: str):
     return authdao.get_user_by_email(email)
+
+
+def get_user_by_id(id: str):
+    return authdao.get_user_by_id(id)
+
+
+def update_roles(user_id: str, role: str):
+    user = get_user_by_id(user_id)
+    if user is None:
+        raise ValueError('This user does not exist.')
+
+    if role not in user.roles:
+        user.roles.append(role)
+    else:
+        user.roles.remove(role)
+
+    authdao.update_user(user)
+    return user

@@ -30,3 +30,22 @@ def delete_user(id: str) -> bool:
         return True
     except Exception as e:
         raise DBException(f'Error removing user.\n{str(e)}')
+
+
+def get_user_by_id(id: str):
+    try:
+        user = db.session.query(db.User).filter(db.User.id == id).first()
+        if user is None:
+            return None
+        user = User.from_db(user)
+        return user
+    except Exception as e:
+        raise DBException(f'Error getting user by id.\n{str(e)}')
+
+
+def update_user(user):
+    try:
+        db.session.merge(db.User(**user.to_db()))
+        db.session.commit()
+    except Exception as e:
+        raise DBException(f'Error updating user.\n{str(e)}')

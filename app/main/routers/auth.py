@@ -28,3 +28,9 @@ def login(register_data: dict):
 
     user = User(email=email, password=password)
     return authservice.register(user)
+
+
+@router.patch('/user/{user_id}/role/{role}')
+@requires(['admin'])
+def update_roles(request: Request, user_id: str, role: str):
+    return authservice.update_roles(user_id, role).get_jwt_data()
