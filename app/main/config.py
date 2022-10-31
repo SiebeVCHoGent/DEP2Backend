@@ -8,6 +8,7 @@ env = dict(dotenv_values())
 class Config:
     def __init__(self):
         self.VERSION = Config.set_env_var("VERSION", "Not Specified")
+        self.JWT_TOKEN = Config.set_env_var("JWT_TOKEN", "test_token")
         # Config Database
         self.DB_TYPE = Config.set_env_var("DB_TYPE", "postgresql")
         self.DB_USER = Config.set_env_var("DB_USER", "postgres")
@@ -45,6 +46,10 @@ class DBConfig():
             __table__ = base.metadata.tables['sector']
         self.Sector = Sector
 
+        class Hoofdsector(base):
+            __table__ = base.metadata.tables['hoofdsector']
+        self.Hoofdsector = Hoofdsector
+
         class Verslag(base):
             __table__ = base.metadata.tables['verslag']
         self.Verslag = Verslag
@@ -56,6 +61,10 @@ class DBConfig():
         class Jaarverslag(base):
             __table__ = base.metadata.tables['jaarverslag']
         self.Jaarverslag = Jaarverslag
+
+        class User(base):
+            __table__ = base.metadata.tables['user']
+        self.User = User
 
         Session = sessionmaker(bind=engine)
         self.session = Session()
