@@ -2,6 +2,7 @@ import typing as t
 
 from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi_auth_middleware import AuthMiddleware
 from starlette import status
 from starlette.authentication import AuthenticationError
@@ -67,5 +68,6 @@ def verify_auth(auth_header) -> t.Tuple[t.List[str], User]:
     except Exception:
         raise AuthenticationError('Authentication failed')
 
+app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 app.add_middleware(AuthMiddleware, verify_header=verify_auth, excluded_urls=['/', '/login', '/register', '/redoc', '/docs'])
