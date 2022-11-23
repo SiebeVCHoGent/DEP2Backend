@@ -36,3 +36,24 @@ def get_all_terms(request: Request):
 def add_searchterm(request: Request, term_id: str):
     termservice.delete_searchterm(term_id)
     return termservice.get_all_terms()
+
+
+@router.post("/searchterm/{term_id}/woord/{word}")
+@requires(["moderator"])
+def add_word(request: Request, term_id: str, word: str):
+    termservice.add_word(term_id, word)
+    return termservice.get_words_for_term(term_id)
+
+
+@router.get("/searchterm/{term_id}/words")
+@requires(["moderator"])
+def get_words_for_term(request: Request, term_id: str):
+    return termservice.get_words_for_term(term_id)
+
+
+# delete word
+@router.delete("/searchterm/{term_id}/woord/{word_id}")
+@requires(["moderator"])
+def delete_word(request: Request, term_id: str, word_id: str):
+    termservice.delete_word(word_id)
+    return termservice.get_words_for_term(term_id)

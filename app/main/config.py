@@ -15,6 +15,7 @@ class Config:
         self.DB_PASSWORD = Config.set_env_var("DB_PASSWORD", "root")
         self.DB_HOST = Config.set_env_var("DB_HOST", "localhost")
         self.DB_NAME = Config.set_env_var("DB_NAME", "dataengineering")
+        self.DB_PORT = Config.set_env_var("DB_PORT", "5432")
 
     @staticmethod
     def set_env_var(env_name, default_value=None):
@@ -29,7 +30,7 @@ class Config:
 class DBConfig():
     def __init__(self, set):
         base = declarative_base()
-        engine = create_engine(f'{set.DB_TYPE}://{set.DB_USER}:{set.DB_PASSWORD}@{set.DB_HOST}/{set.DB_NAME}')
+        engine = create_engine(f'{set.DB_TYPE}://{set.DB_USER}:{set.DB_PASSWORD}@{set.DB_HOST}:{set.DB_PORT}/{set.DB_NAME}')
         engine.connect()
         metadata = MetaData(engine)
         base.metadata.reflect(engine)
@@ -45,10 +46,6 @@ class DBConfig():
         class Sector(base):
             __table__ = base.metadata.tables['sector']
         self.Sector = Sector
-
-        class Hoofdsector(base):
-            __table__ = base.metadata.tables['hoofdsector']
-        self.Hoofdsector = Hoofdsector
 
         class Verslag(base):
             __table__ = base.metadata.tables['verslag']
@@ -69,6 +66,10 @@ class DBConfig():
         class Searchterm(base):
             __table__ = base.metadata.tables['searchterm']
         self.Searchterm = Searchterm
+
+        class Woord(base):
+            __table__ = base.metadata.tables['woord']
+        self.Woord = Woord
 
         Session = sessionmaker(bind=engine)
         self.session = Session()

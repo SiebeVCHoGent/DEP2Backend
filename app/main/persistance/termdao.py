@@ -11,21 +11,60 @@ def add_searchterm(term, parent = None):
         db.session.commit()
         return {"id": id, "term": term, "parent": parent}
     except Exception as e:
+        db.session.rollback()
         raise DBException(f'Error while adding searchterm to database {str(e)}')
 
 
 def get_term_id(term: str):
-    term_db = db.session.query(db.Searchterm).filter(db.Searchterm.term == term).first()
-    if term_db is None:
-        raise ValueError(f'This term does not exist. "{term}"')
-    return term_db.id
+    try:
+        term_db = db.session.query(db.Searchterm).filter(db.Searchterm.term == term).first()
+        if term_db is None:
+            raise ValueError(f'This term does not exist. "{term}"')
+        return term_db.id
+    except Exception as e:
+        db.session.rollback()
+        raise DBException(f'Error while getting term from database {str(e)}')
+
 
 def get_all_terms():
-    terms = db.session.query(db.Searchterm).all()
-    return terms
+    try:
+        terms = db.session.query(db.Searchterm).all()
+        return terms
+    except Exception as e:
+        db.session.rollback()
+        raise DBException(f'Error while getting terms from database {str(e)}')
 
 
 def delete_searchterm(id):
-    db.session.query(db.Searchterm).filter(db.Searchterm.id == id).delete()
-    db.session.commit()
-    return True
+    try:
+        db.session.query(db.Searchterm).filter(db.Searchterm.id == id).delete()
+        db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()
+        raise DBException(f'Error while deleting searchterm from database {str(e)}')
+
+
+def add_word(term_id, word):
+    try:
+        word = db.Woord(id=ulid.ulid(), searchterm=term_id, woord=word)
+        db.session.add(word)
+        db.session.commit()
+        return word
+    except Exception as e:
+        db.session.rollback()
+        raise DBException(f'Error while adding word to database {str(e)}')
+
+
+def delete_word(woord_id: str):
+    try:
+        db.session.query(db.Woord).filter(db.Woord.id == woord_id).delete()
+        db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()
+        raise DBException(f'Error while deleting woord from database {str(e)}')
+
+
+def get_words_for_term(term_id: str):
+    return db.session.query(db.Woord).filter(db.Woord.searchterm == term_id).all()
