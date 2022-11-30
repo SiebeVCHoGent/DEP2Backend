@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.get("/kmo/{ondernemingsnummer}")
 def get_kmo(ondernemingsnummer: str):
-    return status.HTTP_501_NOT_IMPLEMENTED
+    return kmoservice.get_kmo(ondernemingsnummer)
 
 
 @router.get("/kmos")
@@ -18,4 +18,5 @@ def search_kmos(search: str):
     :param search: Query param search string
     :return: All the found kmos
     """
-    return status.HTTP_501_NOT_IMPLEMENTED
+    return kmoservice.search_kmos(search)
+
