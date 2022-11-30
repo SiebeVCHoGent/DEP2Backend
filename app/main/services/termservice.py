@@ -1,3 +1,6 @@
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+
 from app.main.persistance import termdao, scoredao
 
 
@@ -68,5 +71,36 @@ def get_scores_for_kmo(ondernemingsnummer: str):
     return scores
 
 
-def get_score_ranking_all(limit=100):
-    return scoredao.get_score_ranking_all(limit)
+def get_score_ranking_all(jaar: int, limit=100):
+    return scoredao.get_score_ranking_all(jaar, limit)
+
+
+def recalculate_scores(jaar):
+    def format_woorden(woorden):
+        # replace spaces with <-> operator
+        return [woord.woord.strip().replace(' ', '<->') for woord in woorden]
+
+    def score_verslag(woorden):
+        scores = scoredao.calculate_score(woorden, jaar)
+        # scores to dataframe
+        df = pd.DataFrame(scores, columns=['verslag_id', 'jaarverslag_score', 'website_score'])
+
+        # set null to 0
+        df = df.fillna(0)
+        if len(df) > 0:
+            df['jaarverslag_score'] = MinMaxScaler().fit_transform(df['jaarverslag_score'].values.reshape(-1, 1))
+            df['website_score'] = MinMaxScaler().fit_transform(df['website_score'].values.reshape(-1, 1))
+
+        return df
+
+    # remove all calculated scores for this year
+    scoredao.delete_scores_for_year(jaar)
+
+    zoektermen = termdao.get_all_terms()
+
+    for term in zoektermen:
+        woorden = format_woorden(termdao.get_words_for_term(term.id))
+        if len(woorden):
+            scoredao.scores_to_db(term.id, score_verslag(woorden))
+
+    return get_score_ranking_all(jaar)

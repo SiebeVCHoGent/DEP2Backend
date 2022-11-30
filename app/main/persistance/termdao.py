@@ -67,4 +67,8 @@ def delete_word(woord_id: str):
 
 
 def get_words_for_term(term_id: str):
-    return db.session.query(db.Woord).filter(db.Woord.searchterm == term_id).all()
+    try:
+        return db.session.query(db.Woord).filter(db.Woord.searchterm == term_id).all()
+    except Exception as e:
+        db.session.rollback()
+        raise DBException(f'Error while getting words from database {str(e)}')
