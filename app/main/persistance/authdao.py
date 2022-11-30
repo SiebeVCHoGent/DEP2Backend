@@ -13,14 +13,19 @@ def get_user_by_email(email: str):
         user = User.from_db(user)
         return user
     except Exception as e:
+        db.session.rollback()
         raise DBException(f'Error getting user by email.\n{str(e)}')
 
 
 def add_user(user: User):
-    db_user = db.User(**user.to_db())
-    db.session.add(db_user)
-    db.session.commit()
-    return user
+    try:
+        db_user = db.User(**user.to_db())
+        db.session.add(db_user)
+        db.session.commit()
+        return user
+    except Exception as e:
+        db.session.rollback()
+        raise DBException(f'Error adding user.\n{str(e)}')
 
 
 def delete_user(id: str) -> bool:
@@ -29,6 +34,7 @@ def delete_user(id: str) -> bool:
         db.session.commit()
         return True
     except Exception as e:
+        db.session.rollback()
         raise DBException(f'Error removing user.\n{str(e)}')
 
 
@@ -40,6 +46,7 @@ def get_user_by_id(id: str):
         user = User.from_db(user)
         return user
     except Exception as e:
+        db.session.rollback()
         raise DBException(f'Error getting user by id.\n{str(e)}')
 
 
@@ -48,4 +55,5 @@ def update_user(user):
         db.session.merge(db.User(**user.to_db()))
         db.session.commit()
     except Exception as e:
+        db.session.rollback()
         raise DBException(f'Error updating user.\n{str(e)}')

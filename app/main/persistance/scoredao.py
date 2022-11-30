@@ -51,15 +51,19 @@ def get_score_ranking_all(jaar: int, limit: int=100):
 
 
 def calculate_score(woorden, jaar: int):
-    # build woorden query
-    wq = "to_tsquery('dutch', '{}')".format(' | '.join(woorden))
+    try:
+        # build woorden query
+        wq = "to_tsquery('dutch', '{}')".format(' | '.join(woorden))
 
-    scores = db.session.execute(f"SELECT v.id, ts_rank(jv.tekst_vector, {wq}), "
-                             f"ts_rank(w.tekst_vector, {wq}) FROM verslag AS v "
-                             "LEFT JOIN jaarverslag AS jv ON jv.verslag = v.id "
-                             "LEFT JOIN website as w ON w.verslag = v.id "
-                             f"WHERE v.jaar = {jaar}").all()
-    return scores
+        scores = db.session.execute(f"SELECT v.id, ts_rank(jv.tekst_vector, {wq}), "
+                                 f"ts_rank(w.tekst_vector, {wq}) FROM verslag AS v "
+                                 "LEFT JOIN jaarverslag AS jv ON jv.verslag = v.id "
+                                 "LEFT JOIN website as w ON w.verslag = v.id "
+                                 f"WHERE v.jaar = {jaar}").all()
+        return scores
+    except Exception as e:
+        db.session.rollback()
+        raise DBException("Error while calculating score: " + str(e))
 
 
 def scores_to_db(zoekterm_id: str, df: pd.DataFrame):
