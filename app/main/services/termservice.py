@@ -48,8 +48,8 @@ def get_scores_for_kmo(ondernemingsnummer: str):
     scores=[]
 
     c = 0
-    ws=0
-    jvs=0
+    ws = 0
+    jvs = 0
     for obj in scoresdb:
         ws += obj.Score.website_score
         jvs += obj.Score.jaarverslag_score
@@ -62,6 +62,11 @@ def get_scores_for_kmo(ondernemingsnummer: str):
             "jaarverslag_score": obj.Score.jaarverslag_score,
         })
         c += 1
-
+    if c == 0:
+        return scores
     scores.insert(0, {"term": "Gemiddelde Score", "website_score": ws/c, "jaarverslag_score": jvs/c})
     return scores
+
+
+def get_score_ranking_all(limit=100):
+    return scoredao.get_score_ranking_all(limit)

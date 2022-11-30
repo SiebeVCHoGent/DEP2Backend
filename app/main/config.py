@@ -68,7 +68,7 @@ class DBConfig():
         self.Searchterm = Searchterm
 
         class Score(base):
-            __table__ = base.metadata.tables['zoektermScores']
+            __table__ = base.metadata.tables['zoektermscores']
         self.Score = Score
 
         class Woord(base):
