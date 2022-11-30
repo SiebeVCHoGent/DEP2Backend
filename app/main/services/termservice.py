@@ -1,4 +1,4 @@
-from app.main.persistance import termdao
+from app.main.persistance import termdao, scoredao
 
 
 def add_searchterm(term: str, parent_id: str = None):
@@ -40,3 +40,28 @@ def add_word(term_id: str, word: str):
 
 def delete_word(id: str):
     return termdao.delete_word(id)
+
+
+def get_scores_for_kmo(ondernemingsnummer: str):
+    scoresdb = scoredao.get_scores_for_kmo(ondernemingsnummer)
+    # make sum of scores
+    scores=[]
+
+    c = 0
+    ws=0
+    jvs=0
+    for obj in scoresdb:
+        ws += obj.Score.website_score
+        jvs += obj.Score.jaarverslag_score
+
+        scores.append({
+            "verslag_id": obj.Verslag.id,
+            "jaar": obj.Verslag.jaar,
+            "term": obj.Searchterm.term,
+            "website_score": obj.Score.website_score,
+            "jaarverslag_score": obj.Score.jaarverslag_score,
+        })
+        c += 1
+
+    scores.insert(0, {"term": "Gemiddelde Score", "website_score": ws/c, "jaarverslag_score": jvs/c})
+    return scores

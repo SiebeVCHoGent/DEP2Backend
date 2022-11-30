@@ -10,7 +10,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from app.main.model.user import User
-from app.main.routers import kmo, auth, tree
+from app.main.routers import kmo, auth, tree, score
 from app.main.config import settings
 from app.main.services import authservice
 
@@ -30,11 +30,13 @@ def custom_openapi():
     }
     app.openapi_schema = openapi_schema
     return app.openapi_schema
+
 app.openapi = custom_openapi
 
 app.include_router(kmo.router)
 app.include_router(auth.router)
 app.include_router(tree.router)
+app.include_router(score.router)
 
 
 @app.exception_handler(AuthenticationError)
@@ -59,6 +61,7 @@ async def unicorn_exception_handler(request: Request, exc: Exception):
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={"error": f"Internal Server Error {str(exc)}"},
     )
+
 
 def verify_auth(auth_header) -> t.Tuple[t.List[str], User]:
     try:
