@@ -1,5 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from googletrans import Translator
+translator = Translator()
 
 from app.main.persistance import termdao, scoredao
 
@@ -38,6 +40,12 @@ def get_words_for_term(term_id: str):
 
 
 def add_word(term_id: str, word: str):
+    #word generate translation
+    trans = translator.translate(word, src='nl', dest='en')
+    if trans.extra_data.get('confidence') is not None and trans.extra_data.get('confidence', 0) > 0.75:
+        if trans.text != word:
+            termdao.add_word(term_id, trans.text)
+
     return termdao.add_word(term_id, word)
 
 
