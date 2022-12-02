@@ -68,7 +68,8 @@ def verify_auth(auth_header) -> t.Tuple[t.List[str], User]:
         header = auth_header['Authorization']
         user = User(**authservice.decrypt_jwt(header))
         return user.roles, user
-    except Exception:
+    except Exception as e:
+        print(e)
         raise AuthenticationError('Authentication failed')
 
 app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])

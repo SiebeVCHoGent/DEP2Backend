@@ -11,10 +11,12 @@ class User(EntityBaseModel):
     id: str = Field(default_factory=ulid.ulid)
     password: str = ''
     email: str
+    achternaam: str
+    voornaam: str
     roles: t.List[str] = ["standaard"]
 
     def get_jwt_data(self):
-        return {'id': self.id, 'email': self.email, 'roles': self.roles}
+        return {'id': self.id, 'email': self.email, 'achternaam': self.achternaam, 'voornaam': self.voornaam, 'roles': self.roles}
 
     def to_db(self):
         d = vars(self)

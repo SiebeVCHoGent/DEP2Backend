@@ -37,6 +37,7 @@ def register(gebruiker: User) -> str:
         token = __create_jwt(gebruiker.get_jwt_data())
         return token
     except Exception as e:
+        print(e)
         log.error('An error occurred while registering.')
 
 

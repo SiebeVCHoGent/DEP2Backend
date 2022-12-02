@@ -1,5 +1,3 @@
-import json
-
 from app.main.common.exceptions import DBException
 from app.main.config import db
 from app.main.model.user import User

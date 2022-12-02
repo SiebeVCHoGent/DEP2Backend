@@ -16,7 +16,7 @@ def login(login_data: dict):
     except KeyError:
         raise AuthenticationError('Email and/or password are incorrect.')
 
-    return authservice.login(email, password)
+    return {"token": authservice.login(email, password)}
 
 
 @router.post('/register')
@@ -24,11 +24,13 @@ def register(register_data: dict):
     try:
         email = register_data['email']
         password = register_data['password']
-    except KeyError:
-        raise AuthenticationError('Email and password are required for registering.')
+        naam = register_data['naam']
+        voornaam = register_data['voornaam']
+    except KeyError as e:
+        raise AuthenticationError(f'The {str(e)} field is required for registration.')
 
-    user = User(email=email, password=password)
-    return authservice.register(user)
+    user = User(email=email, password=password, achternaam=naam, voornaam=voornaam)
+    return {"token": authservice.register(user)}
 
 
 @router.patch('/user/{user_id}/role/{role}')
