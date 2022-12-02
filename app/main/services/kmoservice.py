@@ -6,4 +6,5 @@ def get_kmo(ondernemingnummer: str):
 
 
 def search_kmos(search: str):
-    return kmodao.search_kmos(search)
+    ondernemingsnummers = [kmo.ondernemingsnummer for kmo in kmodao.search_kmos(search)]
+    return [get_kmo(ondernemingsnummer) for ondernemingsnummer in ondernemingsnummers]

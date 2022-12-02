@@ -86,3 +86,15 @@ def delete_scores_for_year(jaar):
     except Exception as e:
         db.session.rollback()
         raise DBException("Error while deleting scores for year: " + str(e))
+
+
+def get_gemiddelde_scores(verslag_id):
+    try:
+        return db.session.query(
+            func.avg(db.Score.website_score).label("website_score"),
+            func.avg(db.Score.jaarverslag_score).label("jaarverslag_score"),
+            func.avg((db.Score.website_score + db.Score.jaarverslag_score) /2).label("total_score")
+        ).filter(db.Score.verslag_id == verslag_id).first()
+    except Exception as e:
+        db.session.rollback()
+        raise DBException("Error while getting gemiddelde scores: " + str(e))
