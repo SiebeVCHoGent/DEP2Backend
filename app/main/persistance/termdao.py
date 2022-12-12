@@ -1,4 +1,5 @@
 import ulid
+from sqlalchemy import asc
 
 from app.main.common.exceptions import DBException
 from app.main.config import db
@@ -67,8 +68,8 @@ def delete_word(woord_id: str):
 
 
 def get_words_for_term(term_id: str):
-    try:
-        return db.session.query(db.Woord).filter(db.Woord.searchterm == term_id).all()
+    try:    
+        return db.session.query(db.Woord).filter(db.Woord.searchterm == term_id).order_by(db.Woord.woord).all()
     except Exception as e:
         db.session.rollback()
         raise DBException(f'Error while getting words from database {str(e)}')
