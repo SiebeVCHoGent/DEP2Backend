@@ -72,6 +72,7 @@ def verify_auth(auth_header) -> t.Tuple[t.List[str], User]:
         print(e)
         raise AuthenticationError('Authentication failed')
 
+
 app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
-app.add_middleware(AuthMiddleware, verify_header=verify_auth, excluded_urls=['/', '/login', '/register', '/redoc', '/docs'])
+# app.add_middleware(AuthMiddleware, verify_header=verify_auth, excluded_urls=['/', '/login', '/register', '/redoc', '/docs'])

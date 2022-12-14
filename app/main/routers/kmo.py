@@ -18,5 +18,5 @@ def search_kmos(search: str):
     :param search: Query param search string
     :return: All the found kmos
     """
-    return kmoservice.search_kmos(search)
+    return {"kmo": kmoservice.search_kmos(search)}
 

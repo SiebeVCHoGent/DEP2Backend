@@ -22,3 +22,12 @@ def get_score_ranking_all(jaar: int, limit: int = 100):
 def recalculate_scores(request: Request, jaar: int):
     return termservice.recalculate_scores(jaar)
 
+
+@router.get('/score/ranking/{jaar}/sector')
+def get_score_ranking_sector(jaar: int, limit: int = 100):
+    return {"sector": termservice.get_score_ranking_sector(jaar, limit)}
+
+
+@router.get('/score/ranking/{jaar}/hoofdsector')
+def get_score_ranking_hoofdsector(jaar: int, limit: int = 100):
+    return {"hoofdsector": termservice.get_score_ranking_hoofdsector(jaar, limit)}

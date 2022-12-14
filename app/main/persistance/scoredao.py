@@ -1,5 +1,6 @@
 import pandas as pd
 from sqlalchemy import func, desc
+from sqlalchemy.orm import aliased
 
 from app.main.common.exceptions import DBException
 from app.main.config import db
@@ -98,3 +99,52 @@ def get_gemiddelde_scores(verslag_id):
     except Exception as e:
         db.session.rollback()
         raise DBException("Error while getting gemiddelde scores: " + str(e))
+
+
+def get_score_ranking_sector(jaar, limit):
+    try:
+        s1 = aliased(db.Sector)
+        return db.session.query(
+            s1.code,
+            s1.naam,
+            func.avg(db.Score.website_score).label("website_score"),
+            func.avg(db.Score.jaarverslag_score).label("jaarverslag_score"),
+            func.avg((db.Score.website_score + db.Score.jaarverslag_score) / 2).label("total_score"),
+        )\
+        .join(db.Verslag, db.Verslag.id == db.Score.verslag_id)\
+        .join(db.Kmo, db.Kmo.ondernemingsnummer == db.Verslag.ondernemingsnummer)\
+        .join(s1, s1.code == db.Kmo.sector)\
+        .where(db.Verslag.jaar == jaar)\
+        .group_by(s1.code, s1.naam)\
+        .order_by(desc("total_score"))\
+        .all()
+
+    except Exception as e:
+        db.session.rollback()
+        raise DBException("Error while getting scores sector: " + str(e))
+
+
+def get_score_ranking_hoofdsector(jaar, limit):
+    try:
+        s1 = aliased(db.Sector)
+        s2 = aliased(db.Sector)
+
+        return db.session.query(
+            s2.code,
+            s2.naam,
+            func.avg(db.Score.website_score).label("website_score"),
+            func.avg(db.Score.jaarverslag_score).label("jaarverslag_score"),
+            func.avg((db.Score.website_score + db.Score.jaarverslag_score) / 2).label("total_score"),
+        ) \
+            .join(db.Verslag, db.Verslag.id == db.Score.verslag_id) \
+            .join(db.Kmo, db.Kmo.ondernemingsnummer == db.Verslag.ondernemingsnummer) \
+            .join(s1, s1.code == db.Kmo.sector) \
+            .join(s2, s2.code == s1.superparent) \
+            .where(db.Verslag.jaar == jaar) \
+            .group_by(s2.code, s2.naam) \
+            .order_by(desc("total_score")) \
+            .all()
+
+    except Exception as e:
+        db.session.rollback()
+        raise DBException("Error while getting scores hoofdsector: " + str(e))

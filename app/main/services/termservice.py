@@ -112,3 +112,11 @@ def recalculate_scores(jaar):
             scoredao.scores_to_db(term.id, score_verslag(woorden))
 
     return get_score_ranking_all(jaar)
+
+
+def get_score_ranking_sector(jaar, limit):
+    return scoredao.get_score_ranking_sector(jaar, limit)
+
+
+def get_score_ranking_hoofdsector(jaar, limit):
+    return scoredao.get_score_ranking_hoofdsector(jaar, limit)

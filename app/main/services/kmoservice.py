@@ -1,8 +1,10 @@
-from app.main.persistance import kmodao
+from app.main.persistance import kmodao, scoredao
 
 
 def get_kmo(ondernemingnummer: str):
-    return kmodao.get_full_kmo(ondernemingnummer)
+    kmo = kmodao.get_full_kmo(ondernemingnummer)
+    kmo["scores"] = scoredao.get_scores_for_kmo(ondernemingnummer)
+    return kmo
 
 
 def search_kmos(search: str):
