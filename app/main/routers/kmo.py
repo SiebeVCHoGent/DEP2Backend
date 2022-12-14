@@ -8,7 +8,7 @@ router = APIRouter()
 
 @router.get("/kmo/{ondernemingsnummer}")
 def get_kmo(ondernemingsnummer: str):
-    return kmoservice.get_kmo(ondernemingsnummer)
+    return {"kmo": kmoservice.get_kmo(ondernemingsnummer)}
 
 
 @router.get("/kmos")

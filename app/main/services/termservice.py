@@ -120,3 +120,11 @@ def get_score_ranking_sector(jaar, limit):
 
 def get_score_ranking_hoofdsector(jaar, limit):
     return scoredao.get_score_ranking_hoofdsector(jaar, limit)
+
+
+def get_score_ranking_sector_kmo(sector, jaar, limit):
+    return scoredao.get_score_ranking_sector_kmo(sector, jaar, limit)
+
+
+def get_score_ranking_hoofdsector_kmo(hoofdsector, jaar, limit):
+    return scoredao.get_score_ranking_hoofdsector_kmo(hoofdsector, jaar, limit)

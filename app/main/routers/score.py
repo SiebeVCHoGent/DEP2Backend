@@ -31,3 +31,13 @@ def get_score_ranking_sector(jaar: int, limit: int = 100):
 @router.get('/score/ranking/{jaar}/hoofdsector')
 def get_score_ranking_hoofdsector(jaar: int, limit: int = 100):
     return {"hoofdsector": termservice.get_score_ranking_hoofdsector(jaar, limit)}
+
+
+@router.get('/score/ranking/{jaar}/sector/{sector}')
+def get_score_ranking_sector_kmo(sector: str, jaar: int, limit: int = 15):
+    return {"kmos": termservice.get_score_ranking_sector_kmo(sector, jaar, limit)}
+
+
+@router.get('/score/ranking/{jaar}/hoofdsector/{hoofdsector}')
+def get_score_ranking_hoofdsector_kmo(hoofdsector: str, jaar: int, limit: int = 15):
+    return {"kmos": termservice.get_score_ranking_hoofdsector_kmo(hoofdsector, jaar, limit)}

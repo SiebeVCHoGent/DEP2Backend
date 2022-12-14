@@ -69,7 +69,6 @@ def verify_auth(auth_header) -> t.Tuple[t.List[str], User]:
         user = User(**authservice.decrypt_jwt(header))
         return user.roles, user
     except Exception as e:
-        print(e)
         raise AuthenticationError('Authentication failed')
 
 

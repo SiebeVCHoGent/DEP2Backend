@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timedelta
 
 import bcrypt
 from jose import jwt
@@ -24,7 +25,8 @@ def __compare_password(unhashed: str, hashed: str) -> bool:
 
 
 def __create_jwt(jwt_data: dict):
-    return jwt.encode(jwt_data, settings.JWT_TOKEN)
+    expiry = {"exp": datetime.utcnow() + timedelta(days=50)}
+    return jwt.encode({**jwt_data, **expiry}, settings.JWT_TOKEN)
 
 
 def decrypt_jwt(bearer_token: str):
