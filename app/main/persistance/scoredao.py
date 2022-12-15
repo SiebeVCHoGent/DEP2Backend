@@ -1,5 +1,5 @@
 import pandas as pd
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, text
 from sqlalchemy.orm import aliased
 
 from app.main.common.exceptions import DBException
@@ -204,3 +204,66 @@ def get_score_ranking_hoofdsector_kmo(hoofdsector, jaar, limit):
     except Exception as e:
         db.session.rollback()
         raise DBException("Error while getting scores hoofdsector kmo: " + str(e))
+
+
+def get_score_ranking_kmo_in_sector(ondernemingsnummer, jaar):
+    try:
+        # subquery = db.session.query(db.Searchterm.term, db.Kmo.ondernemingsnummer, db.Sector.superparent,
+        #                             func.avg((db.Score.website_score + db.Score.jaarverslag_score) / 2).label("score"),
+        #                             func.percent_rank().over(
+        #                                 partition_by=(db.Searchterm.term, db.Sector.superparent),
+        #                                 order_by=func.avg((db.Score.website_score + db.Score.jaarverslag_score) / 2))
+        # )\
+        # .select_from(db.Score)\
+        # .join(db.Searchterm, db.Searchterm.id == db.Score.zoekterm_id)\
+        # .join(db.Verslag, db.Verslag.id == db.Score.verslag_id)\
+        # .join(db.Kmo, db.Kmo.ondernemingsnummer == db.Verslag.ondernemingsnummer)\
+        # .join(db.Sector, db.Sector.code == db.Kmo.sector)\
+        # .group_by(
+        #     db.Verslag.id,
+        #     db.Searchterm.term,
+        #     db.Kmo.ondernemingsnummer,
+        #     db.Sector.superparent
+        # ).subquery()
+        #
+        # return db.session.query('*')\
+        # .select_from(subquery)\
+        # .filter(db.Kmo.ondernemingsnummer == ondernemingsnummer).all()
+
+        # return db.session.query(db.Sector).all()
+
+        subquery = db.session.query(
+            db.Searchterm.term,
+            db.Kmo.ondernemingsnummer,
+            db.Sector.superparent,
+            (func.sum(db.Score.website_score) + func.sum(db.Score.jaarverslag_score)).label("score"),
+            func.percent_rank().over(
+                partition_by=[db.Searchterm.term, db.Sector.superparent],
+                order_by = (func.sum(db.Score.website_score) + func.sum(db.Score.jaarverslag_score))
+                ).label('rank'))\
+        .join(
+            db.Score,
+            db.Searchterm.id == db.Score.zoekterm_id
+        ).join(
+            db.Verslag,
+            db.Verslag.id == db.Score.verslag_id
+        ).join(
+            db.Kmo,
+            db.Kmo.ondernemingsnummer == db.Verslag.ondernemingsnummer
+        ).join(
+            db.Sector,
+            db.Sector.code == db.Kmo.sector
+        ).group_by(
+            db.Verslag.id,
+            db.Searchterm.term,
+            db.Kmo.ondernemingsnummer,
+            db.Sector.superparent
+        ).subquery()
+
+        return db.session.query(subquery).filter(
+            subquery.c.ondernemingsnummer == ondernemingsnummer
+        ).all()
+
+    except Exception as e:
+        db.session.rollback()
+        raise DBException("Error while getting scores kmo in sector: " + str(e))

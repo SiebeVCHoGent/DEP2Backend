@@ -18,8 +18,7 @@ def get_score_ranking_all(jaar: int, limit: int = 100):
 
 
 @router.post('/score/recalculate/{jaar}')
-@requires(['moderator'])
-def recalculate_scores(request: Request, jaar: int):
+def recalculate_scores(jaar: int):
     return termservice.recalculate_scores(jaar)
 
 
@@ -34,10 +33,15 @@ def get_score_ranking_hoofdsector(jaar: int, limit: int = 100):
 
 
 @router.get('/score/ranking/{jaar}/sector/{sector}')
-def get_score_ranking_sector_kmo(sector: str, jaar: int, limit: int = 15):
+def get_score_ranking_sector_kmo(sector: str, jaar: int, limit: int = 50):
     return {"kmos": termservice.get_score_ranking_sector_kmo(sector, jaar, limit)}
 
 
 @router.get('/score/ranking/{jaar}/hoofdsector/{hoofdsector}')
-def get_score_ranking_hoofdsector_kmo(hoofdsector: str, jaar: int, limit: int = 15):
+def get_score_ranking_hoofdsector_kmo(hoofdsector: str, jaar: int, limit: int = 50):
     return {"kmos": termservice.get_score_ranking_hoofdsector_kmo(hoofdsector, jaar, limit)}
+
+
+@router.get('/score/ranking/{jaar}/kmo/{ondernemingsnummer}')
+def get_score_ranking_kmo_in_sector(ondernemingsnummer: str, jaar: int):
+    return termservice.get_score_ranking_kmo_in_sector(ondernemingsnummer, jaar)
