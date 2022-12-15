@@ -132,3 +132,9 @@ def get_score_ranking_hoofdsector_kmo(hoofdsector, jaar, limit):
 
 def get_score_ranking_kmo_in_sector(ondernemingsnummer: str, jaar: int):
     return scoredao.get_score_ranking_kmo_in_sector(ondernemingsnummer, jaar)
+
+
+def get_score_history_for_kmo(ondernemingsnummer):
+    return scoredao.get_score_history_for_kmo(ondernemingsnummer)
+
+

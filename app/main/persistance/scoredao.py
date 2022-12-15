@@ -267,3 +267,19 @@ def get_score_ranking_kmo_in_sector(ondernemingsnummer, jaar):
     except Exception as e:
         db.session.rollback()
         raise DBException("Error while getting scores kmo in sector: " + str(e))
+
+
+def get_score_history_for_kmo(ondernemingsnummer):
+    try:
+        return db.session.query(
+        db.Verslag.jaar,
+        func.avg(
+            (db.Score.website_score + db.Score.jaarverslag_score) / 2
+        ).label('score')
+    )\
+    .join(db.Verslag, db.Score.verslag_id == db.Verslag.id)\
+    .filter(db.Verslag.ondernemingsnummer == ondernemingsnummer)\
+    .group_by(db.Verslag.jaar).all()
+    except Exception as e:
+        db.session.rollback()
+        raise DBException("Error while getting score history for kmo: " + str(e))

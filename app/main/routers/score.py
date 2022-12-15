@@ -45,3 +45,16 @@ def get_score_ranking_hoofdsector_kmo(hoofdsector: str, jaar: int, limit: int = 
 @router.get('/score/ranking/{jaar}/kmo/{ondernemingsnummer}')
 def get_score_ranking_kmo_in_sector(ondernemingsnummer: str, jaar: int):
     return termservice.get_score_ranking_kmo_in_sector(ondernemingsnummer, jaar)
+
+
+@router.get('/score/kmo/{ondernemingsnummer}/history')
+def get_score_history_for_kmo(ondernemingsnummer: str):
+    return termservice.get_score_history_for_kmo(ondernemingsnummer)
+
+
+@router.get('/graph/{jaar}/{ondernemingsnummer}')
+def get_graph_data_for_kmo(jaar: int, ondernemingsnummer: str):
+    return {
+        "sector_percent": termservice.get_score_ranking_kmo_in_sector(ondernemingsnummer, jaar),
+        "history": termservice.get_score_history_for_kmo(ondernemingsnummer)
+    }
