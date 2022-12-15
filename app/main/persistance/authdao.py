@@ -55,3 +55,15 @@ def update_user(user):
     except Exception as e:
         db.session.rollback()
         raise DBException(f'Error updating user.\n{str(e)}')
+
+
+def search_user(email):
+    try:
+        user = db.session.query(db.User).filter(db.User.email.like(f'%{email}%')).first()
+        if user is None:
+            return None
+        user = User.from_db(user)
+        return user
+    except Exception as e:
+        db.session.rollback()
+        raise DBException(f'Error searching user.\n{str(e)}')

@@ -34,6 +34,15 @@ def register(register_data: dict):
 
 
 @router.patch('/user/{user_id}/role/{role}')
-@requires(['admin'])
-def update_roles(request: Request, user_id: str, role: str):
-    return authservice.update_roles(user_id, role).get_jwt_data()
+def update_roles(user_id: str, role: str):
+    return authservice.update_roles(user_id, role)
+
+
+@router.post('/user/search')
+def search_user(search_data: dict):
+    try:
+        email = search_data['email']
+    except KeyError:
+        raise AuthenticationError('Email is required for searching.')
+
+    return authservice.search_user(email)

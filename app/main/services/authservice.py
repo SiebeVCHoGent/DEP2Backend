@@ -90,4 +90,16 @@ def update_roles(user_id: str, role: str):
         user.roles.remove(role)
 
     authdao.update_user(user)
+
+    user = dict(User.from_db(user))
+    del user['password']
+    return user
+
+
+def search_user(email):
+    user = authdao.search_user(email)
+    if user is not None:
+        user = dict(user)
+        del user['password']
+        return user
     return user
