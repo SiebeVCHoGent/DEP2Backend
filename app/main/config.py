@@ -1,5 +1,5 @@
 from dotenv import dotenv_values
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 env = dict(dotenv_values())
@@ -35,45 +35,58 @@ class DBConfig():
         metadata = MetaData(engine)
         base.metadata.reflect(engine)
 
+        metadata2 = MetaData()
+
+
         class Kmo(base):
             __table__ = base.metadata.tables['kmo']
         self.Kmo = Kmo
+        self.Kmo2 = Table('kmo', metadata2, autoload=True, autoload_with=engine)
 
         class Gemeente(base):
             __table__ = base.metadata.tables['gemeente']
         self.Gemeente = Gemeente
+        self.Gemeente2 = Table('gemeente', metadata2, autoload=True, autoload_with=engine)
 
         class Sector(base):
             __table__ = base.metadata.tables['sector']
         self.Sector = Sector
+        self.Sector2 = Table('sector', metadata2, autoload=True, autoload_with=engine)
 
         class Verslag(base):
             __table__ = base.metadata.tables['verslag']
         self.Verslag = Verslag
+        self.Verslag2 = Table('verslag', metadata2, autoload=True, autoload_with=engine)
 
         class Website(base):
             __table__ = base.metadata.tables['website']
         self.Website = Website
+        self.Website2 = Table('website', metadata2, autoload=True, autoload_with=engine)
 
         class Jaarverslag(base):
             __table__ = base.metadata.tables['jaarverslag']
         self.Jaarverslag = Jaarverslag
+        self.Jaarverslag2 = Table('jaarverslag', metadata2, autoload=True, autoload_with=engine)
 
         class User(base):
             __table__ = base.metadata.tables['user']
         self.User = User
+        self.User2 = Table('user', metadata2, autoload=True, autoload_with=engine)
 
         class Searchterm(base):
             __table__ = base.metadata.tables['searchterm']
         self.Searchterm = Searchterm
+        self.Searchterm2 = Table('searchterm', metadata2, autoload=True, autoload_with=engine)
 
         class Score(base):
             __table__ = base.metadata.tables['zoektermscores']
         self.Score = Score
+        self.Score2 = Table('zoektermscores', metadata2, autoload=True, autoload_with=engine)
 
         class Woord(base):
             __table__ = base.metadata.tables['woord']
         self.Woord = Woord
+        self.Woord2 = Table('woord', metadata2, autoload=True, autoload_with=engine)
 
         Session = sessionmaker(bind=engine)
         self.session = Session()

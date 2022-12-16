@@ -208,30 +208,6 @@ def get_score_ranking_hoofdsector_kmo(hoofdsector, jaar, limit):
 
 def get_score_ranking_kmo_in_sector(ondernemingsnummer, jaar):
     try:
-        # subquery = db.session.query(db.Searchterm.term, db.Kmo.ondernemingsnummer, db.Sector.superparent,
-        #                             func.avg((db.Score.website_score + db.Score.jaarverslag_score) / 2).label("score"),
-        #                             func.percent_rank().over(
-        #                                 partition_by=(db.Searchterm.term, db.Sector.superparent),
-        #                                 order_by=func.avg((db.Score.website_score + db.Score.jaarverslag_score) / 2))
-        # )\
-        # .select_from(db.Score)\
-        # .join(db.Searchterm, db.Searchterm.id == db.Score.zoekterm_id)\
-        # .join(db.Verslag, db.Verslag.id == db.Score.verslag_id)\
-        # .join(db.Kmo, db.Kmo.ondernemingsnummer == db.Verslag.ondernemingsnummer)\
-        # .join(db.Sector, db.Sector.code == db.Kmo.sector)\
-        # .group_by(
-        #     db.Verslag.id,
-        #     db.Searchterm.term,
-        #     db.Kmo.ondernemingsnummer,
-        #     db.Sector.superparent
-        # ).subquery()
-        #
-        # return db.session.query('*')\
-        # .select_from(subquery)\
-        # .filter(db.Kmo.ondernemingsnummer == ondernemingsnummer).all()
-
-        # return db.session.query(db.Sector).all()
-
         subquery = db.session.query(
             db.Searchterm.term,
             db.Kmo.ondernemingsnummer,
