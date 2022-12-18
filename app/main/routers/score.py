@@ -1,8 +1,11 @@
+import time
+
 from fastapi import APIRouter
+from numpy import random
 from starlette.authentication import requires
 from starlette.requests import Request
 
-from app.main.services import termservice
+from app.main.services import termservice, predictionservice
 
 router = APIRouter()
 
@@ -58,3 +61,20 @@ def get_graph_data_for_kmo(jaar: int, ondernemingsnummer: str):
         "sector_percent": termservice.get_score_ranking_kmo_in_sector(ondernemingsnummer, jaar),
         "history": termservice.get_score_history_for_kmo(ondernemingsnummer)
     }
+
+
+@router.post('/predict')
+def predict_score(prediction_data: dict):
+    try:
+        beursgenoteerd = bool(prediction_data['beursgenoteerd'])
+        verstedelijkingsgraad = int(prediction_data['verstedelijkingsgraad'])
+        balanstotaal = int(prediction_data['balanstotaal'])
+        aantalwerknemers = int(prediction_data['aantalwerknemers'])
+        omzet = int(prediction_data['omzet'])
+        omzetperwerknemer = int(omzet / aantalwerknemers)
+        hoofdsector = str(prediction_data['hoofdsector'])
+    except KeyError as e:
+        raise Exception(f'The {str(e)} field is required for registration.')
+
+    time.sleep(2)
+    return predictionservice.predict(beursgenoteerd, verstedelijkingsgraad, aantalwerknemers, omzet, omzetperwerknemer, balanstotaal, hoofdsector)
