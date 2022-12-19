@@ -66,7 +66,6 @@ def get_graph_data_for_kmo(jaar: int, ondernemingsnummer: str):
 @router.post('/predict')
 def predict_score(prediction_data: dict):
     try:
-        beursgenoteerd = bool(prediction_data['beursgenoteerd'])
         verstedelijkingsgraad = int(prediction_data['verstedelijkingsgraad'])
         balanstotaal = int(prediction_data['balanstotaal'])
         aantalwerknemers = int(prediction_data['aantalwerknemers'])
@@ -76,5 +75,4 @@ def predict_score(prediction_data: dict):
     except KeyError as e:
         raise Exception(f'The {str(e)} field is required for registration.')
 
-    time.sleep(2)
-    return predictionservice.predict(beursgenoteerd, verstedelijkingsgraad, aantalwerknemers, omzet, omzetperwerknemer, balanstotaal, hoofdsector)
+    return predictionservice.predict(verstedelijkingsgraad, aantalwerknemers, omzet, omzetperwerknemer, balanstotaal, hoofdsector)

@@ -158,16 +158,18 @@ def get_score_ranking_sector_kmo(sector, jaar, limit):
             s1.naam.label("sector_naam"),
             db.Kmo.ondernemingsnummer,
             db.Kmo.naam,
+            db.Gemeente.naam.label("gemeente"),
             func.avg(db.Score.website_score).label("website_score"),
             func.avg(db.Score.jaarverslag_score).label("jaarverslag_score"),
             func.avg((db.Score.website_score + db.Score.jaarverslag_score) / 2).label("total_score"),
         )\
-        .join(db.Verslag, db.Verslag.id == db.Score.verslag_id)\
+        .join(db.Verslag, db.Verslag.id == db.Score.verslag_id) \
         .join(db.Kmo, db.Kmo.ondernemingsnummer == db.Verslag.ondernemingsnummer)\
+        .join(db.Gemeente, db.Gemeente.postcode == db.Kmo.postcode) \
         .join(s1, s1.code == db.Kmo.sector)\
         .where(db.Verslag.jaar == jaar)\
         .where(s1.code == sector)\
-        .group_by(s1.code, s1.naam, db.Kmo.ondernemingsnummer, db.Kmo.naam)\
+        .group_by(s1.code, s1.naam, db.Kmo.ondernemingsnummer, db.Kmo.naam, db.Gemeente.naam)\
         .order_by(desc("total_score"))\
         .limit(limit)\
         .all()
