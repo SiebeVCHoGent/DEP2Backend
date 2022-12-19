@@ -3,12 +3,12 @@ from app.main.services.predictionservice import predict
 
 def test_predict():
     prediction_data = {
-        "verstedelijkingsgraad": 1,
-        "aantalwerknemers": 30,
-        "omzet": 2086301253,
-        "balanstotaal": 123,
-        "omzetperwerknemer": 4,
-        "hoofdsector": "T"
+        "verstedelijkingsgraad": 2,
+        "aantalwerknemers": 27,
+        "omzet": 5439,
+        "balanstotaal": 78782159,
+        "omzetperwerknemer": 5439999 / 27,
+        "hoofdsector": "O"
     }
     prediction = predict(**prediction_data)
     print(prediction)
