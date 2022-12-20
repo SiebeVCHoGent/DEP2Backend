@@ -46,9 +46,9 @@ def delete_searchterm(id):
         raise DBException(f'Error while deleting searchterm from database {str(e)}')
 
 
-def add_word(term_id, word):
+def add_word(term_id, word, trans):
     try:
-        word = db.Woord(id=ulid.ulid(), searchterm=term_id, woord=word)
+        word = db.Woord(id=ulid.ulid(), searchterm=term_id, woord=word, en_woord=trans)
         db.session.add(word)
         db.session.commit()
         return word

@@ -67,6 +67,9 @@ def calculate_score(woorden, jaar: int):
         raise DBException("Error while calculating score: " + str(e))
 
 
+# def calculate_score_multi_language(woorden, jaar: int):
+
+
 def scores_to_db(zoekterm_id: str, df: pd.DataFrame):
     try:
         for index, row in df.iterrows():
