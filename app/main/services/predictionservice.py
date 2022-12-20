@@ -1,9 +1,15 @@
-import random
 from pathlib import Path
 
 import pandas as pd
 import pickle
 from tensorflow import keras
+
+normalizer_path = Path(__file__).parent.parent.parent.parent / "files" / "normalizer.h5"
+model_path = Path(__file__).parent.parent.parent.parent / 'files' / 'model.h5'
+# Get the model and normalizer
+with open(normalizer_path, 'rb') as f:
+    normalizer = pickle.load(f)
+model = keras.models.load_model(model_path)
 
 COLUMNS = ["aantalwerknemers", "omzet", "omzetperwerknemer", "balanstotaal"]
 for i in range(0, 3):
@@ -15,13 +21,7 @@ for i in range(0, 20):
 
 
 def predict(verstedelijkingsgraad: int, aantalwerknemers: int, omzet: int, omzetperwerknemer: int, balanstotaal: int, hoofdsector: str):
-    normalizer_path = Path(__file__).parent.parent.parent.parent / "files" / "normalizer.h5"
-    model_path = Path(__file__).parent.parent.parent.parent / 'files' / 'model.h5'
 
-    # Get the model and normalizer
-    with open(normalizer_path, 'rb') as f:
-        normalizer = pickle.load(f)
-    model = keras.models.load_model(model_path)
 
     df = clean_data(verstedelijkingsgraad, aantalwerknemers, omzet, omzetperwerknemer, balanstotaal, hoofdsector)
 

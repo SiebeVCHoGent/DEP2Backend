@@ -11,6 +11,10 @@ def add_searchterm(term: str, parent_id: str = None):
 
 
 def delete_searchterm(id: str):
+    words = get_words_for_term(id)
+    if len(words) > 0:
+        raise Exception("Term heeft nog woorden")
+
     return termdao.delete_searchterm(id)
 
 

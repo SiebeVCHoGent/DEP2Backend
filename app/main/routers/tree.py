@@ -33,7 +33,7 @@ def get_all_terms(request: Request):
 
 @router.delete("/searchterm/{term_id}")
 # @requires(["moderator"])
-def add_searchterm(request: Request, term_id: str):
+def delete_searchterm(request: Request, term_id: str):
     termservice.delete_searchterm(term_id)
     return termservice.get_all_terms()
 
